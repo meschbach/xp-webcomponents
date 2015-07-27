@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<title>MEE Lab: Custom HTML tag</title>
+	</head>
+	<body>
+		<h1>Intent: Custom HTML tag</h1>
+
+		<section>
+			<h2>Hello world example</h2>
+			<p>The goal is to have the following append &quot;Hello World!&quot; after the #cdata of the custom element.</p>
+			<div>
+				<hello-world>Hola!</hello-world>
+			</div>
+
+			<style>
+				*:unresolved { opacity: 0; }
+			</style>
+			<script type='application/javascript'>
+				var helloWorldElement = Object.create( HTMLElement.prototype );
+				helloWorldElement.createdCallback = function() {
+					console.log("Created", arguments, this );
+
+					var text = document.createElement( "span" );
+					text.textContent = " Hello world!";
+					this.appendChild( text );
+				}
+
+				var helloWorldComponent = document.registerElement( "hello-world", { prototype: helloWorldElement } );
+			</script>
+		</section>
+
+		<section>
+			<h3>Notes</h3>
+			<ul>
+				<li>Custom element names must contain a hyphen and no upper case letters. (spec 2015-07-26; section 4)</li>
+				<li>CSS selector :unresolved suppose to match unresolved elements (Flash of Unstyled Conent). (spec 2015-07-26; section 7.2)</li>
+				<li>There appears to be some interesting changes which are set to occur with ES6.</li>
+				<li>Callbacks/events from WC are located in section 5.2 of the spec. (spec 2015-07-26; section 5.2)</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Xref</h2>
+			<dl>
+				<dt>Really basic overview</dt>
+					<dd>http://webcomponents.org/articles/introduction-to-custom-elements/.  Depsite what is stated here WC can be registered after the document is loaded.</dd>
+				<dt>MDN ref for #registerElement</dt>
+					<dd>https://developer.mozilla.org/en-US/docs/Web/API/Document/registerElement</dd>
+				<dt>W3 Spec on custom elements</td>
+					<dd>http://w3c.github.io/webcomponents/spec/custom/</dd>
+			</dl>
+		</section>
+	</body>
+</html>
