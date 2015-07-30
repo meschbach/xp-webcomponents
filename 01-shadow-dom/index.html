@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<title>MEE Lab: Shadow DOM</title>
+	</head>
+	<body>
+		<h1>Intent: Inject Shadow DOM to allow separation of content and presentation</h1>
+
+		<section>
+			<h2>Xref custom tag</h2>
+			<p>The goal is to convert a tag describing a reference into a shadow dom element.</p>
+			<div>
+				<me-xref href='http://caniuse.com/#search=shadowdom'>
+					<me-xref-title>Can I use shadowdom</me-xref-title>
+					<me-xref-note>Good source of on support.</me-note>
+				</me-xref>
+				<me-xref href='http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/'>
+					<me-xref-title>Shadow DOM 101</me-xref-title>
+					<me-xref-note>Basic Ref for implementing Shadow DOM</me-note>
+				</me-xref>
+			</div>
+
+			<template id='me-xref-dom'>
+				<div>
+					<span><a href='#'><content select='me-xref-title'></content></a></span> - <content select='me-xref-note'></content>
+				</div>
+			</template>
+
+			<style>
+				*:unresolved { background: blue; }
+			</style>
+			<script type='application/javascript'>
+				var meXref = Object.create( HTMLElement.prototype );
+				meXref.createdCallback = function() {
+					var rawTemplate = document.querySelector( "#me-xref-dom" );
+					var importedTemplate = document.importNode( rawTemplate.content, true );
+
+					this.shadow = this.createShadowRoot();
+					this.shadow.appendChild( importedTemplate );
+					this.syncAttributes();
+				}
+				meXref.attributeChangedCallback = function( name, oldValue, newValue ){
+					this.syncAttributes();
+				}
+				meXref.syncAttributes = function( ){
+					this.shadow.querySelector( "a" ).setAttribute( "href", this.getAttribute( "href" ) );
+				}
+
+				var meXrefTitle = Object.create( HTMLElement.prototype );
+				var meXrefNote = Object.create( HTMLElement.prototype );
+
+				var meXrefComponent = document.registerElement( "me-xref", { prototype: meXref } );
+				var meXrefTitle = document.registerElement( "me-xref-title", { prototype: meXrefTitle } );
+				var meXrefNote = document.registerElement( "me-xref-note", { prototype: meXrefNote } );
+			</script>
+		</section>
+
+		<section>
+			<h3>Notes</h3>
+			<ul>
+				<li>Shadow DOM isn't supported by IE at all.  Feature flagged for Firefox.  Safari only in version 9 and greater. (Can I Use on 2015-07-27)</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Xref</h2>
+			<dl>
+				<dt>Feature availability without Polyfil</dt>
+					<dd>http://caniuse.com/#search=shadowdom - Interactive source of support by browser.</dd>
+			</dl>
+		</section>
+	</body>
+</html>
